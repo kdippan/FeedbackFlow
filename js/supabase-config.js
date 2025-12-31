@@ -9,12 +9,12 @@
 const SUPABASE_URL = 
   typeof process !== 'undefined' && process.env?.SUPABASE_URL ||
   window.ENV?.SUPABASE_URL ||
-  'YOUR_FALLBACK_URL'; // Replace with your actual URL for local dev
+  'https://nwrmzemlrgldyzxipmtn.supabase.co'; // Replace with your actual URL for local dev
 
 const SUPABASE_ANON_KEY = 
   typeof process !== 'undefined' && process.env?.SUPABASE_ANON_KEY ||
   window.ENV?.SUPABASE_ANON_KEY ||
-  'YOUR_FALLBACK_KEY'; // Replace with your actual key for local dev
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cm16ZW1scmdsZHl6eGlwbXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNTU1MjMsImV4cCI6MjA4MjczMTUyM30.-Qin-pvomqBMXq6axShh2MDCvGST042wMD88cQyWXlI'; // Replace with your actual key for local dev
 
 // Get current deployment URL for auth redirects
 const getDeploymentURL = () => {
