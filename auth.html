@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - FeedbackFlow</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-header">
+        <div class="brand">
+          <span class="material-icons">feedback</span>
+          <span class="brand-name">FeedbackFlow</span>
+        </div>
+        <h1 id="auth-title">Welcome Back</h1>
+        <p id="auth-subtitle">Sign in to access your dashboard</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="tab active" data-tab="signin">Sign In</button>
+        <button class="tab" data-tab="signup">Sign Up</button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="signin-form" class="auth-form">
+        <div class="form-group">
+          <label for="signin-email">Email</label>
+          <input type="email" id="signin-email" placeholder="you@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="signin-password">Password</label>
+          <input type="password" id="signin-password" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="btn-primary btn-full">
+          <span class="btn-text">Sign In</span>
+          <span class="spinner hidden"></span>
+        </button>
+        
+        <div class="form-message hidden" id="signin-message"></div>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="signup-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="you@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="••••••••" required minlength="6">
+          <small>At least 6 characters</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="signup-confirm">Confirm Password</label>
+          <input type="password" id="signup-confirm" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="btn-primary btn-full">
+          <span class="btn-text">Create Account</span>
+          <span class="spinner hidden"></span>
+        </button>
+        
+        <div class="form-message hidden" id="signup-message"></div>
+      </form>
+
+      <div class="auth-footer">
+        <a href="index.html">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
