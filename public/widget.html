@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FeedbackFlow Widget</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <link rel="stylesheet" href="../css/widget.css">
+</head>
+<body>
+  <!-- Widget Container -->
+  <div id="widget-container" class="widget-container">
+    
+    <!-- Feedback Form -->
+    <div id="feedback-form" class="feedback-form">
+      <div class="widget-header">
+        <h2>Send Feedback</h2>
+        <button class="btn-close" id="close-widget" aria-label="Close">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      
+      <div class="widget-body">
+        <p class="widget-description">We'd love to hear your thoughts, suggestions, or issues!</p>
+        
+        <form id="submit-form">
+          <div class="form-group">
+            <label for="feedback-message">Your Feedback *</label>
+            <textarea 
+              id="feedback-message" 
+              rows="5" 
+              placeholder="Tell us what you think..."
+              required
+              maxlength="5000"
+            ></textarea>
+            <small class="char-count">
+              <span id="char-count">0</span> / 5000
+            </small>
+          </div>
+          
+          <div class="form-group">
+            <label for="feedback-email">Email (optional)</label>
+            <input 
+              type="email" 
+              id="feedback-email" 
+              placeholder="your@email.com"
+            >
+            <small>We'll only use this to follow up if needed</small>
+          </div>
+          
+          <button type="submit" class="btn-primary btn-full" id="submit-btn">
+            <span class="btn-text">Send Feedback</span>
+            <span class="spinner hidden"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Success State -->
+    <div id="success-state" class="success-state hidden">
+      <div class="success-icon">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <h2>Thank You!</h2>
+      <p>Your feedback has been submitted successfully.</p>
+      <button class="btn-secondary" id="send-another">Send Another</button>
+    </div>
+    
+    <!-- Error State -->
+    <div id="error-state" class="error-state hidden">
+      <div class="error-icon">
+        <span class="material-icons">error</span>
+      </div>
+      <h2>Oops!</h2>
+      <p id="error-message">Something went wrong. Please try again.</p>
+      <div class="error-actions">
+        <button class="btn-secondary" id="retry-btn">Retry</button>
+        <button class="btn-link" id="close-error">Close</button>
+      </div>
+    </div>
+    
+  </div>
+
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/widget.js"></script>
+</body>
+</html>
