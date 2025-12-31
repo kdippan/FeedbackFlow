@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - FeedbackFlow</title>
+  
+  <!-- Security Headers -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' https://*.supabase.co;
+    img-src 'self' data: https:;
+  ">
+  
+  <!-- Environment Variables -->
+  <script>
+    window.ENV = {
+      SUPABASE_URL: '${process.env.NEXT_PUBLIC_SUPABASE_URL}',
+      SUPABASE_ANON_KEY: '${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}'
+    };
+  </script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Chart.js for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="spinner-large"></div>
+    <p>Loading dashboard...</p>
+  </div>
+
+  <!-- Main Dashboard Container -->
+  <div id="dashboard-container" class="dashboard-container hidden">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <span class="material-icons">feedback</span>
+          <span class="brand-name">FeedbackFlow</span>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#overview" class="nav-item active" data-section="overview">
+          <span class="material-icons">dashboard</span>
+          <span>Overview</span>
+        </a>
+        <a href="#feedback" class="nav-item" data-section="feedback">
+          <span class="material-icons">chat</span>
+          <span>Feedback</span>
+          <span class="badge" id="unread-count">0</span>
+        </a>
+        <a href="#widgets" class="nav-item" data-section="widgets">
+          <span class="material-icons">widgets</span>
+          <span>Widgets</span>
+        </a>
+        <a href="#analytics" class="nav-item" data-section="analytics">
+          <span class="material-icons">analytics</span>
+          <span>Analytics</span>
+        </a>
+        <a href="#settings" class="nav-item" data-section="settings">
+          <span class="material-icons">settings</span>
+          <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">
+            <span class="material-icons">account_circle</span>
+          </div>
+          <div class="user-details">
+            <p class="user-name" id="user-name">Loading...</p>
+            <p class="user-email" id="user-email"></p>
+          </div>
+        </div>
+        <button class="btn-logout" id="logout-btn">
+          <span class="material-icons">logout</span>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- Header -->
+      <header class="content-header">
+        <div class="header-left">
+          <button class="btn-menu" id="menu-toggle">
+            <span class="material-icons">menu</span>
+          </button>
+          <h1 id="page-title">Overview</h1>
+        </div>
+        <div class="header-right">
+          <button class="btn-icon" id="theme-toggle" title="Toggle Theme">
+            <span class="material-icons">dark_mode</span>
+          </button>
+          <button class="btn-icon" id="refresh-btn" title="Refresh Data">
+            <span class="material-icons">refresh</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Overview Section -->
+      <section id="section-overview" class="content-section active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #e0f2fe;">
+              <span class="material-icons" style="color: #0284c7;">chat</span>
+            </div>
+            <div class="stat-content">
+              <p class="stat-label">Total Feedback</p>
+              <h2 class="stat-value" id="stat-total-feedback">0</h2>
+              <p class="stat-change positive">
+                <span class="material-icons">trending_up</span>
+                <span id="stat-feedback-change">+0%</span> from last month
+              </p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #fef3c7;">
+              <span class="material-icons" style="color: #d97706;">visibility</span>
+            </div>
+            <div class="stat-content">
+              <p class="stat-label">Widget Views</p>
+              <h2 class="stat-value" id="stat-widget-views">0</h2>
+              <p class="stat-change">
+                <span class="material-icons">remove</span>
+                <span id="stat-views-change">0%</span> from last month
+              </p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #dcfce7;">
+              <span class="material-icons" style="color: #16a34a;">widgets</span>
+            </div>
+            <div class="stat-content">
+              <p class="stat-label">Active Widgets</p>
+              <h2 class="stat-value" id="stat-active-widgets">0</h2>
+              <p class="stat-change">
+                <span class="material-icons">check_circle</span>
+                All operational
+              </p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #fce7f3;">
+              <span class="material-icons" style="color: #db2777;">auto_graph</span>
+            </div>
+            <div class="stat-content">
+              <p class="stat-label">Avg. Response Rate</p>
+              <h2 class="stat-value" id="stat-response-rate">0%</h2>
+              <p class="stat-change positive">
+                <span class="material-icons">trending_up</span>
+                <span id="stat-rate-change">+0%</span> from last month
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>Feedback Over Time</h3>
+            <canvas id="feedback-chart"></canvas>
+          </div>
+          
+          <div class="chart-card">
+            <h3>Recent Activity</h3>
+            <div class="activity-list" id="recent-activity">
+              <p class="empty-state">No recent activity</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feedback Section -->
+      <section id="section-feedback" class="content-section">
+        <div class="feedback-container">
+          <div class="feedback-header">
+            <div class="feedback-filters">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="unread">Unread</button>
+              <button class="filter-btn" data-filter="today">Today</button>
+              <button class="filter-btn" data-filter="week">This Week</button>
+            </div>
+            <div class="feedback-search">
+              <span class="material-icons">search</span>
+              <input type="text" placeholder="Search feedback..." id="feedback-search">
+            </div>
+          </div>
+          
+          <div class="feedback-list" id="feedback-list">
+            <div class="empty-state-large">
+              <span class="material-icons">chat_bubble_outline</span>
+              <h3>No feedback yet</h3>
+              <p>Feedback will appear here once users start submitting through your widget</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feedback Detail Modal -->
+        <div id="feedback-modal" class="modal hidden">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Feedback Details</h3>
+              <button class="btn-close" id="close-modal">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+            <div class="modal-body" id="feedback-detail">
+              <!-- Dynamic content -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Widgets Section -->
+      <section id="section-widgets" class="content-section">
+        <div class="section-header">
+          <h2>Your Widgets</h2>
+          <button class="btn-primary" id="create-widget-btn">
+            <span class="material-icons">add</span>
+            Create New Widget
+          </button>
+        </div>
+        
+        <div class="widgets-grid" id="widgets-grid">
+          <div class="empty-state-large">
+            <span class="material-icons">widgets</span>
+            <h3>No widgets yet</h3>
+            <p>Create your first widget to start collecting feedback</p>
+            <button class="btn-primary" onclick="document.getElementById('create-widget-btn').click()">
+              Create Widget
+            </button>
+          </div>
+        </div>
+
+        <!-- Create Widget Modal -->
+        <div id="widget-modal" class="modal hidden">
+          <div class="modal-content modal-large">
+            <div class="modal-header">
+              <h3 id="widget-modal-title">Create New Widget</h3>
+              <button class="btn-close" id="close-widget-modal">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="widget-form">
+                <div class="form-group">
+                  <label for="widget-site-url">Website URL *</label>
+                  <input type="url" id="widget-site-url" placeholder="https://example.com" required>
+                  <small>The website where you'll embed this widget</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="widget-theme">Theme</label>
+                  <select id="widget-theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="auto">Auto (Match system)</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="widget-position">Position</label>
+                  <select id="widget-position">
+                    <option value="bottom-right">Bottom Right</option>
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="top-right">Top Right</option>
+                    <option value="top-left">Top Left</option>
+                  </select>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="button" class="btn-secondary" onclick="document.getElementById('close-widget-modal').click()">Cancel</button>
+                  <button type="submit" class="btn-primary">
+                    <span class="btn-text">Create Widget</span>
+                    <span class="spinner hidden"></span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Embed Code Modal -->
+        <div id="embed-modal" class="modal hidden">
+          <div class="modal-content modal-large">
+            <div class="modal-header">
+              <h3>Embed Code</h3>
+              <button class="btn-close" id="close-embed-modal">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p class="modal-description">Copy and paste this code before the closing <code>&lt;/body&gt;</code> tag on your website:</p>
+              
+              <div class="code-block">
+                <pre id="embed-code-content"><code></code></pre>
+                <button class="btn-copy" id="copy-embed-btn">
+                  <span class="material-icons">content_copy</span>
+                  Copy Code
+                </button>
+              </div>
+              
+              <div class="alert alert-info">
+                <span class="material-icons">info</span>
+                <div>
+                  <strong>Installation Instructions:</strong>
+                  <ol>
+                    <li>Copy the embed code above</li>
+                    <li>Paste it before the closing &lt;/body&gt; tag in your HTML</li>
+                    <li>The widget will appear automatically on your website</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Section -->
+      <section id="section-analytics" class="content-section">
+        <div class="analytics-grid">
+          <div class="chart-card chart-full">
+            <h3>Feedback Submissions</h3>
+            <canvas id="submissions-chart"></canvas>
+          </div>
+          
+          <div class="chart-card">
+            <h3>Widget Performance</h3>
+            <canvas id="performance-chart"></canvas>
+          </div>
+          
+          <div class="chart-card">
+            <h3>Top Pages</h3>
+            <div class="table-responsive">
+              <table class="data-table" id="top-pages-table">
+                <thead>
+                  <tr>
+                    <th>Page URL</th>
+                    <th>Feedback Count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="2" class="empty-state">No data available</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="section-settings" class="content-section">
+        <div class="settings-container">
+          <div class="settings-card">
+            <h3>Account Settings</h3>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="settings-email" disabled>
+            </div>
+            <div class="form-group">
+              <label>Member Since</label>
+              <input type="text" id="settings-joined" disabled>
+            </div>
+          </div>
+          
+          <div class="settings-card">
+            <h3>Preferences</h3>
+            <div class="settings-option">
+              <div>
+                <strong>Email Notifications</strong>
+                <p>Receive email when new feedback is submitted</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="setting-email-notify" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+            <div class="settings-option">
+              <div>
+                <strong>Dark Mode</strong>
+                <p>Use dark theme across the dashboard</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="setting-dark-mode">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="settings-card danger-zone">
+            <h3>Danger Zone</h3>
+            <div class="settings-option">
+              <div>
+                <strong>Delete Account</strong>
+                <p>Permanently delete your account and all data</p>
+              </div>
+              <button class="btn-danger" id="delete-account-btn">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
